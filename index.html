@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Crypto App</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        :root {
+            --neon-blue: #00f7ff;
+            --neon-pink: #ff00ea;
+            --dark-bg: #0a0a14;
+            --darker-bg: #05050c;
+            --card-bg: rgba(26, 26, 46, 0.7);
+            --text-light: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Снежинки */
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-login {
+            background: var(--neon-blue);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
+        }
+
+        .btn-register {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.8);
+        }
+
+        /* Основной контент */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 100px 20px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Карточка с изображением */
+        .image-card {
+            width: 320px;
+            height: 220px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
+            transition: all 0.5s ease;
+            border: 2px solid transparent;
+        }
+
+        .image-card:hover {
+            box-shadow: 0 0 40px rgba(0, 247, 255, 0.6);
+            border-color: var(--neon-blue);
+            transform: translateY(-5px);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Номер */
+        .number {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 15px 0;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.7);
+        }
+
+        /* Баланс */
+        .balance-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .balance {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .wallet-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Кнопки */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-get {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            color: var(--text-light);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-get:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.8);
+        }
+
+        .btn-click {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-click:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Модальные окна */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+        }
+
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Анимации */
+        @keyframes fall {
+            from { transform: translateY(-10px); }
+            to { transform: translateY(100vh); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка с лого и кнопками авторизации -->
+    <div class="header">
+        <img src="logo.png" alt="Логотип" class="logo">
+        <div class="auth-buttons">
+            <button class="btn-login" id="headerLogin">Войти</button>
+            <button class="btn-register" id="headerRegister">Регистрация</button>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Карточка с изображением -->
+        <div class="image-card">
+            <img src="цшеср.png" alt="Neon Image">
+        </div>
+
+        <!-- Номер -->
+        <div class="number">Ты выйграл Orochi Deagle</div>
+
+        <!-- Баланс -->
+        <div class="balance-container" id="balanceContainer" style="display: none;">
+            <span class="balance" id="balanceDisplay">0.00 G</span>
+            <img src="gold.png" alt="Кошелек" class="wallet-icon">
+        </div>
+
+        <!-- Кнопки -->
+        <div class="button-container">
+            <button class="btn-get" id="getButton">
+                <img src="wallet.png" alt="Кошелек" class="wallet-icon">
+                Получить
+            </button>
+            <button class="btn-click" id="clickButton">Click Gold</button>
+        </div>
+    </div>
+    <!-- Модальное окно авторизации -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Доступ</h2>
+            <p>Для продолжения необходимо войти или зарегистрироваться</p>
+            <div class="modal-buttons">
+                <button class="btn-login" id="modalLogin">Войти</button>
+                <button class="btn-register" id="modalRegister">Регистрация</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно успешной регистрации -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Успешно!</h2>
+            <p>Вы успешно зарегистрированы. Ваш начальный баланс: <span id="initialBalance">0.00</span> G</p>
+            <button class="btn-get" id="successOk" style="margin-top: 20px;">OK</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно входа -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Вход</h2>
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="loginEmail" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid var(--neon-blue); background: rgba(0,0,0,0.3); color: white;">
+                <input type="password" id="loginPassword" placeholder="Пароль" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--neon-blue); background: rgba(0,0,0,0.3); color: white;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-login" id="confirmLogin">Войти</button>
+                <button class="btn-register" id="cancelLogin">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы DOM
+        const getButton = document.getElementById('getButton');
+        const clickButton = document.getElementById('clickButton');
+        const authModal = document.getElementById('authModal');
+        const successModal = document.getElementById('successModal');
+        const loginModal = document.getElementById('loginModal');
+        const modalLogin = document.getElementById('modalLogin');
+        const modalRegister = document.getElementById('modalRegister');
+        const headerLogin = document.getElementById('headerLogin');
+        const headerRegister = document.getElementById('headerRegister');
+        const confirmLogin = document.getElementById('confirmLogin');
+        const cancelLogin = document.getElementById('cancelLogin');
+        const successOk = document.getElementById('successOk');
+        const balanceContainer = document.getElementById('balanceContainer');
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const initialBalance = document.getElementById('initialBalance');
+        
+        // Состояние приложения
+        let balance = 0;
+        let isAuthenticated = false;
+
+        // Создание снежинок
+        function createSnowflakes() {
+            const snowflakeCount = 30;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+        
+                }
+                
+                document.body.appendChild(snowflake);
+            }
+        // Обновление баланса
+        function updateBalance(amount) {
+            balance += amount;
+            balanceDisplay.textContent = balance.toFixed(2) + ' G';
+            localStorage.setItem('balance', balance);
+        }
+
+        // Проверка авторизации при загрузке
+        window.addEventListener('load', () => {
+            const savedBalance = localStorage.getItem('balance');
+            const savedAuth = localStorage.getItem('isAuthenticated');
+            
+            if (savedBalance) {
+                balance = parseFloat(savedBalance);
+                balanceDisplay.textContent = balance.toFixed(2) + ' G';
+            }
+            
+            if (savedAuth === 'true') {
+                isAuthenticated = true;
+                balanceContainer.style.display = 'flex';
+            }
+            
+            createSnowflakes();
+        });
+
+        // Обработчики событий
+        getButton.addEventListener('click', () => {
+            if (!isAuthenticated) {
+                authModal.classList.add('active');
+            } else {
+                window.location.href = 'https://t.me/+KOVZIGWHyeI5MDZi';
+            }
+        });
+
+        clickButton.addEventListener('click', () => {
+            if (isAuthenticated) {
+                updateBalance(0.01);
+            } else {
+                authModal.classList.add('active');
+            }
+        });
+
+        modalLogin.addEventListener('click', () => {
+            authModal.classList.remove('active');
+            loginModal.classList.add('active');
+        });
+
+        headerLogin.addEventListener('click', () => {
+            loginModal.classList.add('active');
+        });
+
+        modalRegister.addEventListener('click', () => {
+            authModal.classList.remove('active');
+            isAuthenticated = true;
+            localStorage.setItem('isAuthenticated', 'true');
+            balanceContainer.style.display = 'flex';
+            successModal.classList.add('active');
+        });
+
+        headerRegister.addEventListener('click', () => {
+            isAuthenticated = true;
+            localStorage.setItem('isAuthenticated', 'true');
+            balanceContainer.style.display = 'flex';
+            successModal.classList.add('active');
+        });
+
+        confirmLogin.addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                isAuthenticated = true;
+                localStorage.setItem('isAuthenticated', 'true');
+                loginModal.classList.remove('active');
+                balanceContainer.style.display = 'flex';
+            } else {
+                alert('Пожалуйста, введите email и пароль');
+            }
+        });
+
+        cancelLogin.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+        });
+
+        successOk.addEventListener('click', () => {
+            successModal.classList.remove('active');
+        });
+
+        // Закрытие модальных окон при клике вне контента
+        [authModal, successModal, loginModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
